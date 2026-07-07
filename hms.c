@@ -71,7 +71,7 @@ int main() {
         printf("==================================================\n");
         printf("Enter choice: ");
         if (scanf("%d", &choice) != 1) {
-            while (getchar() != '\n'); // Clear buffer
+            while (getchar() != '\n');
             continue;
         }
 
@@ -312,7 +312,6 @@ void editPatient() {
             printf("Enter New Clinical Diagnosis: ");
             scanf(" %[^\n]s", p.diagnosis);
             
-            // Move file pointer back to the start of this block
             fseek(fp, -sizeof(Patient), SEEK_CUR);
             fwrite(&p, sizeof(Patient), 1, fp);
             printf("\nPatient entry updated successfully.\n");
@@ -440,7 +439,7 @@ void generateBill() {
             scanf("%lf", &baseFee);
             
             p.billAmount = baseFee;
-            p.isBillApproved = 0; // Sent to Admin queue
+            p.isBillApproved = 0;
 
             fseek(fp, -sizeof(Patient), SEEK_CUR);
             fwrite(&p, sizeof(Patient), 1, fp);
