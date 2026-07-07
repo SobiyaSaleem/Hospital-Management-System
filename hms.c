@@ -1,17 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h> // For password masking (_getch)
+#include <conio.h>
 
-// Define File Names for Persistent Storage
 #define PATIENT_FILE "patients.dat"
 #define DOCTOR_FILE "doctors.dat"
 #define APPOINTMENT_FILE "appointments.dat"
 
-// Define Role Enumerations
 typedef enum { ROLE_ADMIN = 1, ROLE_DOCTOR, ROLE_RECEPTIONIST, ROLE_NONE } UserRole;
 
-// --- Custom Structural Blocks (structs) ---
 
 typedef struct {
     int id;
@@ -20,7 +17,7 @@ typedef struct {
     char gender[10];
     char diagnosis[100];
     double billAmount;
-    int isBillApproved; // 0 = Pending, 1 = Approved by Admin
+    int isBillApproved;
 } Patient;
 
 typedef struct {
@@ -38,35 +35,28 @@ typedef struct {
     char time[20];
 } Appointment;
 
-// --- Function Prototypes ---
 UserRole loginPortal();
 void maskPassword(char *password, int maxLength);
 
-// Modules
 void adminMenu();
 void doctorMenu(int doctorId);
 void receptionistMenu();
 
-// Patient Subroutines (CRUD)
 void addPatient();
 void viewPatients();
 void searchPatient();
 void editPatient();
 void deletePatient();
 
-// Doctor Subroutines
 void addDoctor();
 void viewDoctors();
 
-// Appointment Subroutines
 void bookAppointment();
 void viewAppointments();
 
-// Billing Subroutines
 void generateBill();
 void approveBills();
 
-// --- Main Program Execution Flow ---
 int main() {
     UserRole currentRole = ROLE_NONE;
     int choice;
@@ -90,7 +80,6 @@ int main() {
             if (currentRole == ROLE_ADMIN) {
                 adminMenu();
             } else if (currentRole == ROLE_DOCTOR) {
-                // For simulation, let's assume Doctor ID 101 logs in
                 doctorMenu(101);
             } else if (currentRole == ROLE_RECEPTIONIST) {
                 receptionistMenu();
@@ -106,7 +95,6 @@ int main() {
     return 0;
 }
 
-// --- Multi-User Authentication Screen ---
 UserRole loginPortal() {
     char username[30];
     char password[30];
@@ -121,7 +109,6 @@ UserRole loginPortal() {
     maskPassword(password, 30);
     printf("\n==================================================\n");
 
-    // hardcoded credentials for prototype simulation
     if (strcmp(username, "admin") == 0 && strcmp(password, "admin123") == 0) {
         printf("Access Granted: Welcome Admin.\n");
         getch();
@@ -141,15 +128,14 @@ UserRole loginPortal() {
     }
 }
 
-// Security Feature: Console Mask Password Input
 void maskPassword(char *password, int maxLength) {
     int i = 0;
     char ch;
     while (i < maxLength - 1) {
         ch = _getch();
-        if (ch == 13) { // Enter key
+        if (ch == 13) { 
             break;
-        } else if (ch == 8) { // Backspace key
+        } else if (ch == 8) {
             if (i > 0) {
                 i--;
                 printf("\b \b");
@@ -161,8 +147,6 @@ void maskPassword(char *password, int maxLength) {
     }
     password[i] = '\0';
 }
-
-// --- Role-Based Custom Sub-Menus ---
 
 void adminMenu() {
     int choice;
@@ -245,8 +229,6 @@ void receptionistMenu() {
     }
 }
 
-// --- Patient Management Modules (CRUD) ---
-
 void addPatient() {
     FILE *fp = fopen(PATIENT_FILE, "ab");
     if (!fp) { printf("File Streaming Error.\n"); return; }
@@ -264,7 +246,7 @@ void addPatient() {
     printf("Enter Clinical Diagnosis: ");
     scanf(" %[^\n]s", p.diagnosis);
     p.billAmount = 0.0;
-    p.isBillApproved = 0; // Requires admin verification
+    p.isBillApproved = 0;
 
     fwrite(&p, sizeof(Patient), 1, fp);
     fclose(fp);
@@ -370,8 +352,6 @@ void deletePatient() {
     getch();
 }
 
-// --- Doctor Management Subroutines ---
-
 void addDoctor() {
     FILE *fp = fopen(DOCTOR_FILE, "ab");
     if (!fp) { printf("File error.\n"); return; }
@@ -405,8 +385,6 @@ void viewDoctors() {
     fclose(fp);
     getch();
 }
-
-// --- Appointment Subroutines ---
 
 void bookAppointment() {
     FILE *fp = fopen(APPOINTMENT_FILE, "ab");
@@ -443,8 +421,6 @@ void viewAppointments() {
     fclose(fp);
     getch();
 }
-
-// --- Automated Billing Engine ---
 
 void generateBill() {
     FILE *fp = fopen(PATIENT_FILE, "rb+");
